@@ -7,14 +7,16 @@ services:
       - dokploy-network
     labels:
       - "traefik.enable=true"
-      # HTTPS route
-      - "traefik.http.routers.framer-liquid-nav.rule=Host(`liquidnav.lightsitemedia.com`)"
+      # HTTPS route — shares cdn.lightsitemedia.com with framer-multistep-form,
+      # but only claims the /LiquidNav.js path. Traefik prioritises this more-specific
+      # rule over the framer-form's bare Host() rule automatically.
+      - "traefik.http.routers.framer-liquid-nav.rule=Host(`cdn.lightsitemedia.com`) && Path(`/LiquidNav.js`)"
       - "traefik.http.routers.framer-liquid-nav.entrypoints=websecure"
       - "traefik.http.routers.framer-liquid-nav.tls=true"
       - "traefik.http.routers.framer-liquid-nav.tls.certresolver=letsencrypt"
       - "traefik.http.services.framer-liquid-nav.loadbalancer.server.port=80"
-      # HTTP redirect to HTTPS
-      - "traefik.http.routers.framer-liquid-nav-http.rule=Host(`liquidnav.lightsitemedia.com`)"
+      # HTTP redirect to HTTPS (same path constraint)
+      - "traefik.http.routers.framer-liquid-nav-http.rule=Host(`cdn.lightsitemedia.com`) && Path(`/LiquidNav.js`)"
       - "traefik.http.routers.framer-liquid-nav-http.entrypoints=web"
       - "traefik.http.routers.framer-liquid-nav-http.middlewares=redirect-to-https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
