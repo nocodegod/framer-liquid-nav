@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LiquidNav preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --background: oklch(0.04 0.012 270); --foreground: oklch(0.97 0.005 270); }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; min-height: 100%;
+    background: var(--background); color: var(--foreground);
+    font-family: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .stage {
+    position: relative; min-height: 100vh; overflow: hidden; isolation: isolate;
+    display: flex; flex-direction: column; align-items: center; padding: 80px 24px;
+  }
+  .stage::before, .stage::after, .blob {
+    content: ""; position: absolute; border-radius: 50%;
+    filter: blur(80px); z-index: 0; pointer-events: none;
+  }
+  .stage::before {
+    top: -10%; left: 18%; width: 640px; height: 640px;
+    background: radial-gradient(circle at 30% 30%, oklch(0.55 0.22 290 / 0.95), transparent 60%);
+  }
+  .stage::after {
+    top: 4%; right: 6%; width: 520px; height: 520px;
+    background: radial-gradient(circle at 70% 40%, oklch(0.62 0.20 325 / 0.85), transparent 60%);
+  }
+  .blob.b3 {
+    top: 38%; left: 38%; width: 720px; height: 720px;
+    background: radial-gradient(circle, oklch(0.55 0.20 215 / 0.55), transparent 65%);
+  }
+  .grain {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    opacity: 0.35; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  #app { position: relative; z-index: 2; }
+  .label {
+    position: relative; z-index: 2;
+    margin-top: 56px; font-size: 13px;
+    color: rgba(255,255,255,0.45); letter-spacing: 0.02em; text-align: center;
+  }
+  .label code { color: rgba(255,255,255,0.7); }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="blob b3"></div>
+    <div class="grain"></div>
+    <div id="app"></div>
+    <div class="label">Local preview of <code>dist/LiquidNav.js</code> — hot-rebuild with <code>npm run dev</code> and refresh.</div>
+  </div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script>
+    // Stub the Framer globals the bundle expects
+    window.__FRAMER_REACT = React;
+    window.__FRAMER_REACT_DOM = ReactDOM;
+    window.__FRAMER = {
+      addPropertyControls: () => {},
+      ControlType: {
+        String: "string", Number: "number", Boolean: "boolean",
+        Color: "color", Array: "array", Object: "object",
+      },
+    };
+  </script>
+  <script src="./dist/LiquidNav.js"></script>
+  <script>
+    const LiquidNav = window.__LIQUID_NAV__.default;
+    const root = ReactDOM.createRoot(document.getElementById("app"));
+    root.render(React.createElement(LiquidNav, {}));
+  </script>
+</body>
+</html>
