@@ -3,7 +3,13 @@ import { addPropertyControls, ControlType } from "framer"
 
 // ============================================
 // LiquidNav — pill-shaped liquid-glass navigation
-// Recreated 1:1 from the SolCard reference HTML.
+//
+// Matches the LIVE solcard.cc production nav 1:1 (verified 2026-05-12 by
+// fetching the rendered HTML + linked CSS). Production strips the ring
+// highlight + gloss radial-gradient layers that the original reference HTML
+// included as polish — solcard.cc renders neither. Pure liquid glass =
+// backdrop-filter (brightness + blur + displacement + chromatic) + side-only
+// border + bottom-fading card-color background + nav links.
 // ============================================
 
 const GEIST_HREF = "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap"
@@ -23,9 +29,9 @@ function useGeistFont(enabled) {
 
 export default function LiquidNav({
     items = [
-        { label: "Startseite", href: "#home" },
-        { label: "Karten", href: "#cards" },
-        { label: "Token", href: "#token" },
+        { label: "Home", href: "/" },
+        { label: "Cards", href: "/product" },
+        { label: "Token", href: "/token" },
     ],
     fontFamily = '"Geist", ui-sans-serif, system-ui, -apple-system, sans-serif',
     loadGeistFont = true,
@@ -34,11 +40,11 @@ export default function LiquidNav({
     chromaticOffset = 2,
     displacementScale = 200,
     glassBorderColor = "rgba(255, 255, 255, 0.125)",
-    glassHighlight = "rgba(255, 255, 255, 0.45)",
     cardColor = "rgba(20, 18, 30, 1)",
     textColor = "rgba(247, 245, 252, 1)",
     linkOpacity = 0.7,
-    linkOpacityHover = 0.95,
+    linkOpacityHover = 0.9,
+    transitionMs = 150,
     pillVerticalPadding = 8,
     linkHeight = 40,
     sidePadding = 22,
@@ -55,27 +61,15 @@ export default function LiquidNav({
     const dispFilterId = safeId + "_disp"
     const chromaFilterId = safeId + "_chroma"
     const linkClass = safeId + "_link"
-    const ringClass = safeId + "_ring"
     const pillClass = safeId + "_pill"
 
-    // Scoped CSS — :hover, vendor-prefixed mask-composite, and backdrop-filter
-    // with SVG filter refs (per-instance IDs make this dynamic).
+    // Scoped CSS: backdrop-filter with per-instance SVG refs + hover opacity
     const css = `
 .${pillClass} {
     backdrop-filter: brightness(${brightness}) blur(${blurAmount}px) url(#${dispFilterId}) url(#${chromaFilterId});
     -webkit-backdrop-filter: brightness(${brightness}) blur(${blurAmount}px);
 }
-.${ringClass} {
-    -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-}
-.${linkClass} { transition: opacity 220ms ease; }
+.${linkClass} { transition: opacity ${transitionMs}ms ease; }
 .${linkClass}:hover { opacity: ${linkOpacityHover} !important; }
 `.trim()
 
@@ -100,40 +94,8 @@ export default function LiquidNav({
         fontFamily,
     }
 
-    const ringStyle = {
-        position: "absolute",
-        inset: 0,
-        borderRadius: 9999,
-        pointerEvents: "none",
-        zIndex: 1,
-        padding: "0.5px",
-        background: `linear-gradient(to bottom, ${glassHighlight} 0%, rgba(255,255,255,0.05) 35%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.08) 100%)`,
-    }
-
-    const glossStyle = {
-        position: "absolute",
-        inset: 0,
-        borderRadius: 9999,
-        zIndex: 2,
-        pointerEvents: "none",
-        overflow: "hidden",
-        background: [
-            "radial-gradient(120% 60% at 50% -10%, rgba(255,255,255,0.10), transparent 60%)",
-            "radial-gradient(120% 60% at 50% 120%, rgba(255,255,255,0.04), transparent 60%)",
-        ].join(", "),
-    }
-
-    const navStyle = {
-        position: "relative",
-        zIndex: 3,
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    }
-
     return (
-        <div className={pillClass} style={pillStyle}>
+        <div className={pillClass} data-fluid-bg="1" style={pillStyle}>
             <style>{css}</style>
 
             {/* SVG defs — per-instance IDs, hidden from layout */}
@@ -213,10 +175,16 @@ export default function LiquidNav({
                 </defs>
             </svg>
 
-            <div className={ringClass} style={ringStyle} />
-            <div style={glossStyle} />
-
-            <nav style={navStyle}>
+            <nav
+                style={{
+                    position: "relative",
+                    zIndex: 3,
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
                 {items.map((item, i) => {
                     const isFirst = i === 0
                     const isLast = i === items.length - 1
@@ -258,13 +226,13 @@ addPropertyControls(LiquidNav, {
             type: ControlType.Object,
             controls: {
                 label: { type: ControlType.String, defaultValue: "Link" },
-                href: { type: ControlType.String, defaultValue: "#" },
+                href: { type: ControlType.String, defaultValue: "/" },
             },
         },
         defaultValue: [
-            { label: "Startseite", href: "#home" },
-            { label: "Karten", href: "#cards" },
-            { label: "Token", href: "#token" },
+            { label: "Home", href: "/" },
+            { label: "Cards", href: "/product" },
+            { label: "Token", href: "/token" },
         ],
     },
     fontFamily: {
@@ -314,11 +282,6 @@ addPropertyControls(LiquidNav, {
         title: "Glass Border",
         defaultValue: "rgba(255, 255, 255, 0.125)",
     },
-    glassHighlight: {
-        type: ControlType.Color,
-        title: "Highlight",
-        defaultValue: "rgba(255, 255, 255, 0.45)",
-    },
     cardColor: {
         type: ControlType.Color,
         title: "Card Tint",
@@ -336,16 +299,22 @@ addPropertyControls(LiquidNav, {
         min: 0,
         max: 1,
         step: 0.05,
-        displayStepper: true,
     },
     linkOpacityHover: {
         type: ControlType.Number,
         title: "Hover Opacity",
-        defaultValue: 0.95,
+        defaultValue: 0.9,
         min: 0,
         max: 1,
         step: 0.05,
-        displayStepper: true,
+    },
+    transitionMs: {
+        type: ControlType.Number,
+        title: "Hover Transition (ms)",
+        defaultValue: 150,
+        min: 0,
+        max: 1000,
+        step: 25,
     },
     pillVerticalPadding: {
         type: ControlType.Number,
