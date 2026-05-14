@@ -11,6 +11,10 @@
 		Content-Type "application/javascript; charset=utf-8"
 	}
 
+	header /LiquidNav2.js {
+		Content-Type "application/javascript; charset=utf-8"
+	}
+
 	@options method OPTIONS
 	respond @options 204
 
