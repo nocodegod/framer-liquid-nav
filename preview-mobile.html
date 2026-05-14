@@ -68,9 +68,10 @@
       },
     };
   </script>
-  <script src="./dist/LiquidNavMobile.js"></script>
-  <script>
-    const LiquidNavMobile = window.__LIQUID_NAV_MOBILE__.default;
+  <script type="module">
+    // ESM dynamic import so the bundle's `export default` is reachable.
+    const mod = await import("./dist/LiquidNavMobile.js");
+    const LiquidNavMobile = mod.default;
     const root = ReactDOM.createRoot(document.getElementById("app"));
     root.render(React.createElement(LiquidNavMobile, {}));
   </script>
