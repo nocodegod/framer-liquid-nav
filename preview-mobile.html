@@ -42,20 +42,6 @@
   h1 { position: relative; z-index: 2; margin: 24vh 0 0 0; font-size: 32px; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; color: rgba(255,255,255,0.92); }
   p.lead { position: relative; z-index: 2; max-width: 320px; font-size: 14px; color: rgba(255,255,255,0.6); margin-top: 12px; }
 </style>
-
-<!-- Browser-native import map resolves the externals esbuild left unresolved.
-     Framer's runtime does the same thing on its side. -->
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@18.3.1?dev",
-    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime?dev",
-    "react-dom": "https://esm.sh/react-dom@18.3.1?dev",
-    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?dev",
-    "framer": "/framer-mock.js"
-  }
-}
-</script>
 </head>
 <body>
   <div class="stage">
@@ -63,16 +49,28 @@
     <div class="grain"></div>
     <div id="app"></div>
     <h1>The secret behind profitable marketing on Meta</h1>
-    <p class="lead">Tap the hamburger top-right. The panel below should open with 4 links + the metallic CTA, with the liquid-glass body refracting the background blobs behind it.</p>
+    <p class="lead">Tap the hamburger top-right. Liquid-glass panel drops down with 4 links + metallic CTA.</p>
   </div>
 
-  <script type="module">
-    import { createElement } from "react"
-    import { createRoot } from "react-dom/client"
-    import LiquidNavMobile from "./dist/LiquidNavMobile.js"
-
-    const root = createRoot(document.getElementById("app"))
-    root.render(createElement(LiquidNavMobile, {}))
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script>
+    window.__FRAMER_REACT = React;
+    window.__FRAMER_REACT_DOM = ReactDOM;
+    window.__FRAMER = {
+      addPropertyControls: () => {},
+      ControlType: {
+        String: "string", Number: "number", Boolean: "boolean",
+        Color: "color", Array: "array", Object: "object",
+        Link: "link", Enum: "enum",
+      },
+    };
+  </script>
+  <script src="./dist/LiquidNavMobile.js"></script>
+  <script>
+    const LiquidNavMobile = window.__LIQUID_NAV__.default;
+    const root = ReactDOM.createRoot(document.getElementById("app"));
+    root.render(React.createElement(LiquidNavMobile, {}));
   </script>
 </body>
 </html>

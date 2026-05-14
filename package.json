@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build:desktop": "esbuild src/LiquidNav.jsx --bundle --format=iife --global-name=__LIQUID_NAV__ --outfile=dist/LiquidNav.js --alias:react/jsx-runtime=./src/shims/react-jsx-runtime.js --alias:react=./src/shims/react.js --alias:react-dom=./src/shims/react-dom.js --alias:framer=./src/shims/framer.js --jsx=automatic --loader:.jsx=jsx --minify",
-    "build:mobile": "esbuild src/LiquidNavMobile.jsx --bundle --format=esm --outfile=dist/LiquidNavMobile.js --external:react --external:react/jsx-runtime --external:react-dom --external:framer --jsx=automatic --loader:.jsx=jsx --minify",
+    "build:mobile": "esbuild src/LiquidNavMobile.jsx --bundle --format=iife --global-name=__LIQUID_NAV__ --outfile=dist/LiquidNavMobile.js --alias:react/jsx-runtime=./src/shims/react-jsx-runtime.js --alias:react=./src/shims/react.js --alias:react-dom=./src/shims/react-dom.js --alias:framer=./src/shims/framer.js --jsx=automatic --loader:.jsx=jsx --minify",
     "build": "npm run build:desktop && npm run build:mobile",
     "dev": "esbuild src/LiquidNav.jsx src/LiquidNavMobile.jsx --bundle --format=iife --outdir=dist --alias:react/jsx-runtime=./src/shims/react-jsx-runtime.js --alias:react=./src/shims/react.js --alias:react-dom=./src/shims/react-dom.js --alias:framer=./src/shims/framer.js --jsx=automatic --loader:.jsx=jsx --watch"
   },
