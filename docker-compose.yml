@@ -10,13 +10,16 @@ services:
       # HTTPS route — shares cdn.lightsitemedia.com with framer-multistep-form,
       # but only claims the /LiquidNav.js path. Traefik prioritises this more-specific
       # rule over the framer-form's bare Host() rule automatically.
-      - "traefik.http.routers.framer-liquid-nav.rule=Host(`cdn.lightsitemedia.com`) && (Path(`/LiquidNav.js`) || Path(`/LiquidNav2.js`))"
+      # Matches /LiquidNav.js (production) plus /LiquidNav<N>.js for any digit
+      # run (dev aliases). Traefik v3 PathRegexp uses Go regex; backslash-dot
+      # escapes the literal dot.
+      - "traefik.http.routers.framer-liquid-nav.rule=Host(`cdn.lightsitemedia.com`) && PathRegexp(`^/LiquidNav[0-9]*\\.js$`)"
       - "traefik.http.routers.framer-liquid-nav.entrypoints=websecure"
       - "traefik.http.routers.framer-liquid-nav.tls=true"
       - "traefik.http.routers.framer-liquid-nav.tls.certresolver=letsencrypt"
       - "traefik.http.services.framer-liquid-nav.loadbalancer.server.port=80"
       # HTTP redirect to HTTPS (same path constraint)
-      - "traefik.http.routers.framer-liquid-nav-http.rule=Host(`cdn.lightsitemedia.com`) && (Path(`/LiquidNav.js`) || Path(`/LiquidNav2.js`))"
+      - "traefik.http.routers.framer-liquid-nav-http.rule=Host(`cdn.lightsitemedia.com`) && PathRegexp(`^/LiquidNav[0-9]*\\.js$`)"
       - "traefik.http.routers.framer-liquid-nav-http.entrypoints=web"
       - "traefik.http.routers.framer-liquid-nav-http.middlewares=redirect-to-https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"

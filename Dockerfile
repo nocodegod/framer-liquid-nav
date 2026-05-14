@@ -5,9 +5,10 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY src/ src/
 RUN npm run build
-# Publish a second URL alias (LiquidNav2.js) so Framer treats it as a brand-new
-# code component and bypasses its URL-keyed import cache. Same bundle bytes.
-RUN cp /app/dist/LiquidNav.js /app/dist/LiquidNav2.js
+# Publish LiquidNav2.js .. LiquidNav19.js as URL aliases (same bundle bytes,
+# different URLs) so Framer's URL-keyed import cache can be bypassed by
+# incrementing the alias whenever the cache gets sticky. Each file is ~12kb.
+RUN for i in $(seq 2 19); do cp /app/dist/LiquidNav.js /app/dist/LiquidNav${i}.js; done
 
 # Stage 2: Serve with Caddy
 FROM caddy:2-alpine
