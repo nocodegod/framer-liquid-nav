@@ -35,13 +35,25 @@ function useExternalFont(href, dataAttr, enabled) {
 }
 
 export default function LiquidNav({
-    // — Content —
-    items = [
-        { label: "Home", href: "./" },
-        { label: "About us", href: "./about-us" },
-        { label: "Designs", href: "./Our-Work" },
-        { label: "Prices", href: "./Pricing" },
-    ],
+    // — Content (6 flat slots, items 1–4 visible by default) —
+    item1Visible = true,
+    item1Label = "Home",
+    item1Href = "./",
+    item2Visible = true,
+    item2Label = "About us",
+    item2Href = "./about-us",
+    item3Visible = true,
+    item3Label = "Designs",
+    item3Href = "./Our-Work",
+    item4Visible = true,
+    item4Label = "Prices",
+    item4Href = "./Pricing",
+    item5Visible = false,
+    item5Label = "Blog",
+    item5Href = "./blog",
+    item6Visible = false,
+    item6Label = "Contact",
+    item6Href = "./contact",
     showCta = true,
     ctaLabel = "Book a call",
     ctaHref = "./leadgen-form-free-website-done-offer",
@@ -309,16 +321,25 @@ export default function LiquidNav({
                     gap: pillGap,
                 }}
             >
-                {items.map((item, i) => (
-                    <a
-                        key={`${i}-${item.label}-${item.href}`}
-                        className={linkClass}
-                        href={item.href}
-                        style={linkStyle}
-                    >
-                        {item.label}
-                    </a>
-                ))}
+                {[
+                    { v: item1Visible, l: item1Label, h: item1Href },
+                    { v: item2Visible, l: item2Label, h: item2Href },
+                    { v: item3Visible, l: item3Label, h: item3Href },
+                    { v: item4Visible, l: item4Label, h: item4Href },
+                    { v: item5Visible, l: item5Label, h: item5Href },
+                    { v: item6Visible, l: item6Label, h: item6Href },
+                ]
+                    .filter((it) => it.v && it.l)
+                    .map((it, i) => (
+                        <a
+                            key={`${i}-${it.l}-${it.h}`}
+                            className={linkClass}
+                            href={it.h}
+                            style={linkStyle}
+                        >
+                            {it.l}
+                        </a>
+                    ))}
                 {showCta && (
                     <a
                         href={ctaHref}
@@ -343,24 +364,25 @@ export default function LiquidNav({
 }
 
 addPropertyControls(LiquidNav, {
-    // — Content —
-    items: {
-        type: ControlType.Array,
-        title: "Links",
-        control: {
-            type: ControlType.Object,
-            controls: {
-                label: { type: ControlType.String, defaultValue: "Link" },
-                href: { type: ControlType.String, defaultValue: "/" },
-            },
-        },
-        defaultValue: [
-            { label: "Home", href: "./" },
-            { label: "About us", href: "./about-us" },
-            { label: "Designs", href: "./Our-Work" },
-            { label: "Prices", href: "./Pricing" },
-        ],
-    },
+    // — Content (6 flat link slots — toggle each on/off, set its label + URL) —
+    item1Visible: { type: ControlType.Boolean, title: "Item 1 — Show", defaultValue: true },
+    item1Label: { type: ControlType.String, title: "Item 1 — Label", defaultValue: "Home", hidden: (p) => !p.item1Visible },
+    item1Href: { type: ControlType.String, title: "Item 1 — Link", defaultValue: "./", hidden: (p) => !p.item1Visible },
+    item2Visible: { type: ControlType.Boolean, title: "Item 2 — Show", defaultValue: true },
+    item2Label: { type: ControlType.String, title: "Item 2 — Label", defaultValue: "About us", hidden: (p) => !p.item2Visible },
+    item2Href: { type: ControlType.String, title: "Item 2 — Link", defaultValue: "./about-us", hidden: (p) => !p.item2Visible },
+    item3Visible: { type: ControlType.Boolean, title: "Item 3 — Show", defaultValue: true },
+    item3Label: { type: ControlType.String, title: "Item 3 — Label", defaultValue: "Designs", hidden: (p) => !p.item3Visible },
+    item3Href: { type: ControlType.String, title: "Item 3 — Link", defaultValue: "./Our-Work", hidden: (p) => !p.item3Visible },
+    item4Visible: { type: ControlType.Boolean, title: "Item 4 — Show", defaultValue: true },
+    item4Label: { type: ControlType.String, title: "Item 4 — Label", defaultValue: "Prices", hidden: (p) => !p.item4Visible },
+    item4Href: { type: ControlType.String, title: "Item 4 — Link", defaultValue: "./Pricing", hidden: (p) => !p.item4Visible },
+    item5Visible: { type: ControlType.Boolean, title: "Item 5 — Show", defaultValue: false },
+    item5Label: { type: ControlType.String, title: "Item 5 — Label", defaultValue: "Blog", hidden: (p) => !p.item5Visible },
+    item5Href: { type: ControlType.String, title: "Item 5 — Link", defaultValue: "./blog", hidden: (p) => !p.item5Visible },
+    item6Visible: { type: ControlType.Boolean, title: "Item 6 — Show", defaultValue: false },
+    item6Label: { type: ControlType.String, title: "Item 6 — Label", defaultValue: "Contact", hidden: (p) => !p.item6Visible },
+    item6Href: { type: ControlType.String, title: "Item 6 — Link", defaultValue: "./contact", hidden: (p) => !p.item6Visible },
     showCta: {
         type: ControlType.Boolean,
         title: "Show Metal CTA",
