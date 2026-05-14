@@ -8,16 +8,17 @@
 		Access-Control-Allow-Methods "GET, OPTIONS"
 	}
 
-	# Production URL — long edge cache, short browser cache.
-	header /LiquidNav.js {
+	# Production URLs — long edge cache, short browser cache.
+	@production path_regexp ^/LiquidNav(Mobile)?\.js$
+	header @production {
 		Content-Type "application/javascript; charset=utf-8"
 		Cache-Control "public, max-age=300, s-maxage=31536000, stale-while-revalidate=86400"
 	}
 
-	# Dev/iteration aliases (LiquidNav2.js .. LiquidNav19.js) — every fetch
-	# hits the origin so Framer always pulls the freshest bundle, no proxy or
-	# browser layer holds onto a stale copy. Same bundle bytes as production.
-	@aliases path_regexp ^/LiquidNav[0-9]+\.js$
+	# Dev/iteration aliases — every fetch hits the origin so Framer always
+	# pulls the freshest bundle, no proxy or browser layer holds onto a stale
+	# copy. Covers both /LiquidNav<N>.js and /LiquidNavMobile<N>.js families.
+	@aliases path_regexp ^/LiquidNav(Mobile)?[0-9]+\.js$
 	header @aliases {
 		Content-Type "application/javascript; charset=utf-8"
 		Cache-Control "no-store, no-cache, must-revalidate, max-age=0"

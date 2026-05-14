@@ -13,13 +13,13 @@ services:
       # Matches /LiquidNav.js (production) plus /LiquidNav<N>.js for any digit
       # run (dev aliases). Traefik v3 PathRegexp uses Go regex; backslash-dot
       # escapes the literal dot.
-      - "traefik.http.routers.framer-liquid-nav.rule=Host(`cdn.lightsitemedia.com`) && PathRegexp(`^/LiquidNav[0-9]*\\.js$`)"
+      - "traefik.http.routers.framer-liquid-nav.rule=Host(`cdn.lightsitemedia.com`) && PathRegexp(`^/LiquidNav(Mobile)?[0-9]*\\.js$`)"
       - "traefik.http.routers.framer-liquid-nav.entrypoints=websecure"
       - "traefik.http.routers.framer-liquid-nav.tls=true"
       - "traefik.http.routers.framer-liquid-nav.tls.certresolver=letsencrypt"
       - "traefik.http.services.framer-liquid-nav.loadbalancer.server.port=80"
       # HTTP redirect to HTTPS (same path constraint)
-      - "traefik.http.routers.framer-liquid-nav-http.rule=Host(`cdn.lightsitemedia.com`) && PathRegexp(`^/LiquidNav[0-9]*\\.js$`)"
+      - "traefik.http.routers.framer-liquid-nav-http.rule=Host(`cdn.lightsitemedia.com`) && PathRegexp(`^/LiquidNav(Mobile)?[0-9]*\\.js$`)"
       - "traefik.http.routers.framer-liquid-nav-http.entrypoints=web"
       - "traefik.http.routers.framer-liquid-nav-http.middlewares=redirect-to-https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
