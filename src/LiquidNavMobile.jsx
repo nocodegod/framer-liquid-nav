@@ -187,7 +187,8 @@ backdrop-filter: brightness(${brightness}) blur(${blurAmount}px) url(#${dispFilt
 -webkit-backdrop-filter: brightness(${brightness}) blur(${blurAmount}px);
 `.trim()
 
-    const glassBackground = `linear-gradient(to bottom, ${cardColor} 0%, rgba(255,255,255,0.02) 100%)`
+    const glassBackground = cardColor
+    const panelViewportWidth = `min(${panelMaxWidth}px, calc(100vw - 32px))`
 
     const css = `
 .${wrapperClass} { position: relative; display: inline-block; width: 100%; }
@@ -209,6 +210,7 @@ backdrop-filter: brightness(${brightness}) blur(${blurAmount}px) url(#${dispFilt
     transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    box-sizing: border-box;
 }
 ${useGlassHamburger ? `.${hamburgerClass} { ${glassBackdropCss} }` : ""}
 
@@ -233,8 +235,8 @@ ${useGlassHamburger ? `.${hamburgerClass} { ${glassBackdropCss} }` : ""}
 .${panelClass} {
     position: absolute;
     top: calc(100% + ${panelOffsetY}px);
-    width: 100%;
-    max-width: ${panelMaxWidth}px;
+    width: ${panelViewportWidth};
+    max-width: calc(100vw - 32px);
     padding: ${panelPadding}px;
     border-radius: ${panelBorderRadius}px;
     overflow: hidden;
@@ -252,6 +254,7 @@ ${useGlassHamburger ? `.${hamburgerClass} { ${glassBackdropCss} }` : ""}
         visibility 0s linear ${transitionMs}ms;
     z-index: 1000;
     font-family: ${fontFamily};
+    box-sizing: border-box;
 }
 .${panelClass}[data-open="false"] {
     opacity: 0;
