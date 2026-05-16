@@ -64,7 +64,7 @@ export default function LiquidNavMobile({
     // — Hamburger button —
     hamburgerSize = 44,
     hamburgerBgColor = "rgba(20, 18, 30, 1)",
-    hamburgerBorderColor = "rgba(255, 255, 255, 0.14)",
+    hamburgerBorderColor = "rgba(255, 255, 255, 0.125)",
     hamburgerLineColor = "rgb(153, 153, 153)",
     hamburgerLineColorOpen = "rgba(247, 245, 252, 1)",
     hamburgerLineWidth = 20,
@@ -74,12 +74,12 @@ export default function LiquidNavMobile({
     useGlassHamburger = true, // when true, hamburger uses liquid-glass body instead of solid fill
 
     // — Liquid-glass body (shared by panel and optionally hamburger) —
-    blurAmount = 12,
+    blurAmount = 4,
     brightness = 1.1,
-    chromaticOffset = 0,
-    displacementScale = 0,
-    glassBorderColor = "rgba(255, 255, 255, 0.14)",
-    cardColor = "rgba(12, 10, 18, 0.26)",
+    chromaticOffset = 2,
+    displacementScale = 200,
+    glassBorderColor = "rgba(255, 255, 255, 0.125)",
+    cardColor = "rgba(20, 18, 30, 1)",
 
     // — Panel layout —
     panelOffsetY = 8,
@@ -180,16 +180,14 @@ export default function LiquidNavMobile({
     const capGradient =
         "linear-gradient(rgb(71, 77, 80) 0%, rgb(39, 43, 45) 42%, rgb(30, 32, 33) 74%, rgb(19, 20, 21) 100%)"
 
-    // Single SolCard-style glass recipe reused by the panel (and optionally
-    // the hamburger): neutral highlight, blur/brightness, no blue top glow.
-    const displacementFilterCss = displacementScale > 0 ? ` url(#${dispFilterId})` : ""
-    const chromaticFilterCss = chromaticOffset > 0 ? ` url(#${chromaFilterId})` : ""
+    // Same liquid-glass body recipe as desktop LiquidNav, reused by the panel
+    // and optionally the hamburger so both breakpoints share one visual system.
     const glassBackdropCss = `
-backdrop-filter: brightness(${brightness}) blur(${blurAmount}px)${displacementFilterCss}${chromaticFilterCss};
+backdrop-filter: brightness(${brightness}) blur(${blurAmount}px) url(#${dispFilterId}) url(#${chromaFilterId});
 -webkit-backdrop-filter: brightness(${brightness}) blur(${blurAmount}px);
 `.trim()
 
-    const glassBackground = `linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 100%), ${cardColor}`
+    const glassBackground = `linear-gradient(to bottom, ${cardColor} 0%, rgba(255,255,255,0) 100%)`
     const panelViewportWidth = `min(${panelMaxWidth}px, calc(100vw - 32px))`
 
     const css = `
@@ -536,7 +534,7 @@ addPropertyControls(LiquidNavMobile, {
     hamburgerSize: { type: ControlType.Number, title: "Hamburger Size", defaultValue: 44, min: 28, max: 80, step: 1 },
     useGlassHamburger: { type: ControlType.Boolean, title: "Glass Hamburger", defaultValue: true },
     hamburgerBgColor: { type: ControlType.Color, title: "Hamburger Fill", defaultValue: "rgba(20, 18, 30, 1)", hidden: (p) => !!p.useGlassHamburger },
-    hamburgerBorderColor: { type: ControlType.Color, title: "Hamburger Border", defaultValue: "rgba(255, 255, 255, 0.14)", hidden: (p) => !p.useGlassHamburger },
+    hamburgerBorderColor: { type: ControlType.Color, title: "Hamburger Border", defaultValue: "rgba(255, 255, 255, 0.125)", hidden: (p) => !p.useGlassHamburger },
     hamburgerLineColor: { type: ControlType.Color, title: "Line Color", defaultValue: "rgb(153, 153, 153)" },
     hamburgerLineColorOpen: { type: ControlType.Color, title: "Line Color (Open)", defaultValue: "rgba(247, 245, 252, 1)" },
     hamburgerLineWidth: { type: ControlType.Number, title: "Line Width", defaultValue: 20, min: 8, max: 32, step: 1 },
@@ -544,12 +542,12 @@ addPropertyControls(LiquidNavMobile, {
     hamburgerLineGap: { type: ControlType.Number, title: "Line Gap", defaultValue: 6, min: 0, max: 20, step: 1 },
 
     // — Liquid-glass body —
-    blurAmount: { type: ControlType.Number, title: "Blur", defaultValue: 12, min: 0, max: 40, step: 1 },
+    blurAmount: { type: ControlType.Number, title: "Blur", defaultValue: 4, min: 0, max: 40, step: 1 },
     brightness: { type: ControlType.Number, title: "Brightness", defaultValue: 1.1, min: 0.5, max: 2, step: 0.05 },
-    chromaticOffset: { type: ControlType.Number, title: "Chromatic Offset", defaultValue: 0, min: 0, max: 10, step: 0.5 },
-    displacementScale: { type: ControlType.Number, title: "Displacement", defaultValue: 0, min: 0, max: 500, step: 10 },
-    glassBorderColor: { type: ControlType.Color, title: "Glass Border", defaultValue: "rgba(255, 255, 255, 0.14)" },
-    cardColor: { type: ControlType.Color, title: "Card Tint", defaultValue: "rgba(12, 10, 18, 0.26)" },
+    chromaticOffset: { type: ControlType.Number, title: "Chromatic Offset", defaultValue: 2, min: 0, max: 10, step: 0.5 },
+    displacementScale: { type: ControlType.Number, title: "Displacement", defaultValue: 200, min: 0, max: 500, step: 10 },
+    glassBorderColor: { type: ControlType.Color, title: "Glass Border", defaultValue: "rgba(255, 255, 255, 0.125)" },
+    cardColor: { type: ControlType.Color, title: "Card Tint", defaultValue: "rgba(20, 18, 30, 1)" },
 
     // — Panel —
     panelOffsetY: { type: ControlType.Number, title: "Panel Offset Y", defaultValue: 8, min: 0, max: 40, step: 1 },
